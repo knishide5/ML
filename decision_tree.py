@@ -1,3 +1,4 @@
+# http://codecrafthouse.jp/p/2014/09/decision-tree/
 import numpy as np
 
 class _Node:
