@@ -1,5 +1,6 @@
 # http://codecrafthouse.jp/p/2014/09/decision-tree/
 import numpy as np
+from sklearn import datasets
 
 class _Node:
   def __init__(self):
@@ -29,7 +30,7 @@ class _Node:
     best_feature = None
     best_threshold = None
 
-    gini = self.gini_func(label)
+    gini = self.gini_func(target)
 
     for f in range(num_features):
       data_f = np.unique(data[:, f])
@@ -87,6 +88,13 @@ class _Node:
     self.left.prune(criterion, numall)
     self.right.prune(criterion, numall)
 
+    if self.left.feature == None and self.right.feature == None:
+      result = self.gini_index * float(self.numdata) / numall
+      if result < criterion:
+        self.feature = None
+        self.left = None
+        self.right = None
+
   # 入力データの分類クラスを返す
   def predict(self, d):
     if self.feature == None:
@@ -102,13 +110,13 @@ class _Node:
 
     # 節の場合
     if self.feature != None:
-        print head + str(self.feature) + " < " + str(self.threshold) + "?"
-        self.left.print_tree(depth + 1, "T")
-        self.right.print_tree(depth + 1, "F")
+      print(head + str(self.feature) + " < " + str(self.threthold) + "?")
+      self.left.print_tree(depth + 1, "T")
+      self.right.print_tree(depth + 1, "F")
 
     # 葉の場合
     else:
-        print head + "{" + str(self.label) + ": " + str(self.numdata) + "}"
+      print(head + "{" + str(self.label) + ": " + str(self.numdata) + "}")
 
 class DecisionTree:
   def __init__(self, criterion=0.1):
@@ -128,3 +136,12 @@ class DecisionTree:
 
   def print_tree(self):
     self.root.print_tree(0, " ")
+
+def main():
+  iris = datasets.load_iris()
+  tree = DecisionTree()
+  tree.fit(iris.data, iris.target)
+  tree.print_tree()
+
+if __name__ == "__main__":
+    main()
