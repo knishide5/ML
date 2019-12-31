@@ -98,7 +98,17 @@ class _Node:
       return self.right.predict(d)
 
   def print_tree(self, depth, TF):
-    return
+    head = "    " * depth + TF + " -> "
+
+    # 節の場合
+    if self.feature != None:
+        print head + str(self.feature) + " < " + str(self.threshold) + "?"
+        self.left.print_tree(depth + 1, "T")
+        self.right.print_tree(depth + 1, "F")
+
+    # 葉の場合
+    else:
+        print head + "{" + str(self.label) + ": " + str(self.numdata) + "}"
 
 class DecisionTree:
   def __init__(self, criterion=0.1):
